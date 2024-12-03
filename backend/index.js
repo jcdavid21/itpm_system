@@ -10,10 +10,7 @@ import fs from 'fs'
 const app = express()
 
 app.use(express.json())
-app.use(cors({
-    origin: "https://itpm-system-zsbj.vercel.app/", // Adjust to your actual frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE"]
-}));
+app.use(cors())
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
