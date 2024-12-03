@@ -121,19 +121,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Helper function to delete file
-const deleteFile = (filePath) => {
-    return new Promise((resolve, reject) => {
-        fs.unlink(filePath, (err) => {
-            if (err) {
-                reject(`Failed to delete file: ${err}`);
-            } else {
-                resolve("Uploaded file deleted successfully.");
-            }
-        });
-    });
-};
-
 app.post("/submitForm", upload.single('file'), async (req, res) => {
     const { credential, studentType, message, acc_id } = req.body;
 
@@ -143,23 +130,11 @@ app.post("/submitForm", upload.single('file'), async (req, res) => {
         if (result.length > 0) {
             console.error("Form already submitted");
 
-            // Delete uploaded file if form already submitted
-            if (req.file) {
-                const filePath = path.resolve('./files_img', req.file.filename); // Resolve path to 'files_img'
-                await deleteFile(filePath); // Use async/await for better error handling
-            }
-
+            // Respond with an error if the form has already been submitted
             return res.status(400).json({ message: "Form already submitted" });
         }
     } catch (err) {
         console.error("Error checking form existence:", err);
-
-        // Delete uploaded file if an error occurs
-        if (req.file) {
-            const filePath = path.resolve('./files_img', req.file.filename);
-            await deleteFile(filePath);
-        }
-
         return res.status(500).json({ message: "Error checking form existence" });
     }
 
