@@ -1,5 +1,5 @@
 export const ApiConfig = {
-    apiURL: 'http://localhost:8800/'
+    apiURL: 'http://sql12.freesqldatabase.com:3306/'
 }
 
 export default ApiConfig;
