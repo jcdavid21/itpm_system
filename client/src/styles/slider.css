@@ -1,0 +1,34 @@
+.container .img-con{
+    height: 280px;
+}
+
+
+.container .img-con img{
+    object-fit: cover;
+    object-position: center;
+}
+
+@media (min-width: 640px) {
+    .container .img-con{
+        height: 300px;
+    }
+}
+
+@media (min-width: 820px) {
+    .container .img-con{
+        height: 400px;
+    }
+}
+
+@media (min-width: 920px) {
+    .container .img-con{
+        height: 600px;
+    }
+}
+
+/* 
+@media (min-width: 1020px) {
+    .container .img-con{
+        height: 750px;
+    }
+} */
