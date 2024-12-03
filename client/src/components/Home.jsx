@@ -126,20 +126,7 @@ function Home() {
         <div className=' overflow-hidden'>
             <Navigation />
             <div className='container w-full max-w-full mb-16 mt-16 md:mb-56'>
-                <Slider {...settings}>
-                    {imgs.map((img, index) => (
-                        <div key={index} className="img-con flex items-center w-full justify-center relative">
-                            <img src={img.src} alt="" className=' object-fill'/>
-                            {index > 0 ? (
-                                <div className='absolute left-5 right-0 top-0 bottom-0 flex flex-col items-center justify-center'>
-                                <h1 className="text-white text-3xl font-semibold tracking-widest md:text-5xl lg:text-7xl">{img.title}</h1>
-                                <p className="text-white text-xs w-8/12 mt-5 p-2
-                                md:text-lg lg:text-xl lg:w-6/12">{img.desc}</p>
-                            </div>
-                            ) : (<></>)}
-                        </div>
-                    ))}
-                </Slider>
+               
             </div>
 
             <div className='mt-20'>
