@@ -110,19 +110,7 @@ function Home() {
             <div className="update-con md:mb-28 mt-20">
               <div className=' max-w-screen-xl lg:max-w-screen-2xl mx-auto pl-9 pr-9 flex flex-col gap-10 justify-center items-center
               md:flex-row'>
-                {newsCon.map((con, index)=>(
-                    <div
-                    data-aos={window.innerWidth < 500 ? con.aos : con.aos2} data-aos-duration={con.delay} 
-                    className='flex flex-col items-center w-full justify-center gap-4 md:flex-row' key={index}>
-                        {con.svg}
-                        <div className='text-center md:text-start'>
-                            <h1 className=' font-semibold text-xl text-gray-800'>
-                                {con.title}
-                            </h1>
-                            <div className=' font-light md:w-10/12'>{con.desc}</div>
-                        </div>
-                    </div>
-                ))}
+
               </div>
             </div>
             
