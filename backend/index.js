@@ -74,10 +74,12 @@ const sendEmailAccount = async (providedEmail, email, password, activity, full_n
 
 async function activitLog(user_id, user_name, activity){
     try{
+        const current_date = new Date();
+        const formatted_date = current_date.toISOString().split('T')[0];
         const query = `INSERT INTO tbl_logs
-        (user_id, user_name, activity)
-        VALUES(?, ?, ?)`;
-        const values = [user_id, user_name, activity]
+        (user_id, user_name, activity, activity_date)
+        VALUES(?, ?, ?, ?)`;
+        const values = [user_id, user_name, activity, formatted_date];
         db.query(query, values, (err, data)=>{
             if (err) {
                 console.error("Error inserting into tbl_logs:", err);
@@ -189,9 +191,9 @@ app.post("/submitForm", upload.single('file'), async (req, res) => {
 
     const query = `
             INSERT INTO tbl_file_submitted 
-            (account_id, rp_id, student_type, remarks, file_img, status_id) 
-            VALUES (?, ?, ?, ?, ?, ?)`;
-        const values = [acc_id, credential, studentType, message, fileImg, 1];
+            (account_id, rp_id, student_type, remarks, file_img, status_id, submitted_date) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        const values = [acc_id, credential, studentType, message, fileImg, 1, formatted_date];
 
         db.query(query, values, (err, data) => {
             if (err) {
@@ -508,15 +510,18 @@ app.get("/reportTypes", (req, res)=>{
     })
 })
 
-
 app.post('/create-account', async (req, res) => {
     try {
         // Get user account details from request body
         const { studentId, email, username, password, role, firstName, middleName, lastName, address, contact, birthdate, gender, account_id, full_name, providedEmail} = req.body;
 
 
+        const current_date = new Date();
+        const formatted_date = current_date.toISOString().split('T')[0];
+
+
         const accountValues = [username, password, email, studentId, role];
-        const accountDetails = [firstName, middleName, lastName, address, contact, birthdate, gender];
+        const accountDetails = [firstName, middleName, lastName, address, contact, birthdate, gender, formatted_date];
         const activty = "Create Account"
         // Check if the studentId or email already exist in tbl_account
         const checkQuery = `SELECT * FROM tbl_account WHERE student_id = ? OR acc_email = ?`;
@@ -535,8 +540,8 @@ app.post('/create-account', async (req, res) => {
 
             // Insert user data into the database
             const firstQuery = `INSERT INTO tbl_account 
-                (acc_username, acc_password, acc_email, student_id, acc_role_id)
-                VALUES (?)`;
+                (acc_username, acc_password, acc_email, student_id, acc_role_id, date_added)
+                VALUES (?, ?, ?, ?, ?, ?)`;
 
             db.query(firstQuery, [accountValues], (err, result) => {
                 if (err) {
