@@ -16,10 +16,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "itpm_db"
+    host: "sql12.freesqldatabase.com",
+    user: "sql12749310",
+    password: "XsVndcVtZV",
+    database: "sql12749310"
 })
 
 const sendEmailAccount = async (providedEmail, email, password, activity, full_name) => {
@@ -1070,7 +1070,7 @@ app.delete("/delAnc", (req, res)=>{
 })
 
 
-app.listen(8800, ()=>{
+app.listen(3306, ()=>{
 
     console.log("Connected to backend!")
 })
