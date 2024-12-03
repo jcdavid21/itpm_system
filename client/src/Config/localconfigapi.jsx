@@ -1,5 +1,5 @@
 export const ApiConfig = {
-    apiURL: 'http://sql12.freesqldatabase.com:3306/'
+    apiURL: 'https://itpm-system.vercel.app/'
 }
 
 export default ApiConfig;
