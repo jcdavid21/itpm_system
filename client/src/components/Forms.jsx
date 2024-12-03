@@ -136,7 +136,12 @@ function Forms() {
                 return;
             }
 
-            const response = await axios.post(`${ApiConfig.apiURL}submitForm`, formData);
+            const response = await axios.post(`${ApiConfig.apiURL}submitForm`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            
             if (response.status === 200) {
                 Swal.fire({
                     title: "Success",
@@ -156,6 +161,10 @@ function Forms() {
             }
         } catch (err) {
             console.error("Error: ", err);
+            if (err.response) {
+                // This will log the response details, helpful for server errors
+                console.error("Server Response: ", err.response.data);
+            }
             Swal.fire({
                 title: "Submission Failed",
                 text: "There was an error submitting the form. Please try again.",
