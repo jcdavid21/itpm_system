@@ -475,17 +475,16 @@ app.get("/reportTypes", (req, res)=>{
 app.post('/create-account', async (req, res) => {
     try {
         // Get user account details from request body
-        const { studentId, email, username, password, role, firstName, middleName, lastName, address, contact, birthdate, gender, account_id, full_name, providedEmail} = req.body;
-
+        const { studentId, email, username, password, role, firstName, middleName, lastName, address, contact, birthdate, gender, account_id, full_name, providedEmail } = req.body;
 
         const current_date = new Date();
-        const formatted_date = current_date.toISOString().split('T')[0];
-
+        const formatted_date = current_date.toISOString().split('T')[0];  // Get current date in YYYY-MM-DD format
 
         const accountValues = [username, password, email, studentId, role, formatted_date];
         const accountDetails = [firstName, middleName, lastName, address, contact, birthdate, gender];
-        const activty = "Create Account"
-        // Check if the studentId or email already exist in tbl_account
+        const activty = "Create Account";
+
+        // Check if the studentId or email already exists in tbl_account
         const checkQuery = `SELECT * FROM tbl_account WHERE student_id = ? OR acc_email = ?`;
         db.query(checkQuery, [studentId, email], async (checkErr, checkResult) => {
             if (checkErr) {
@@ -498,14 +497,15 @@ app.post('/create-account', async (req, res) => {
                 return res.status(299).json({ error: 'Student ID or email already exists' });
             }
 
+            // Send email for account creation
             await sendEmailAccount(providedEmail, email, password, "Account Creation", full_name);
 
-            // Insert user data into the database
+            // Insert user data into the tbl_account
             const firstQuery = `INSERT INTO tbl_account 
                 (acc_username, acc_password, acc_email, student_id, acc_role_id, date_added)
                 VALUES (?, ?, ?, ?, ?, ?)`;
 
-            db.query(firstQuery, [accountValues], (err, result) => {
+            db.query(firstQuery, [...accountValues], (err, result) => {
                 if (err) {
                     console.error('Error executing Query 1:', err);
                     return res.status(500).json({ error: 'Error executing Query 1' });
@@ -524,8 +524,11 @@ app.post('/create-account', async (req, res) => {
                         console.error('Error executing Query 2:', err);
                         return res.status(500).json({ error: 'Error executing Query 2' });
                     }
+
+                    // Log the activity for account creation
                     activitLog(account_id, full_name, activty);
 
+                    // Return success response
                     return res.status(200).json({ message: 'Account created successfully. QR code sent to email.' });
                 });
             });
@@ -535,7 +538,6 @@ app.post('/create-account', async (req, res) => {
         res.status(500).json({ error: 'Error creating account' });
     }
 });
-
 
 
 
