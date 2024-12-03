@@ -159,19 +159,7 @@ function Home() {
                         </div>
 
                         <div className='mt-7 md:flex md:justify-between md:gap-5 md:max-h-max md:overflow-auto md:pb-4'>
-                            {announcements.map((anc, index) => (
-                                <div key={anc.anc_id} data-aos="fade-up" data-aos-delay={`${index * 100}`} className={index === 0 ? "mb-6 md:w-96 md:shadow-lg md:mb-0 md:rounded" : "flex gap-5 pt-2 pb-2 border-b border-gray-300 md:flex-col md:shadow-lg md:rounded md:w-96"}>
-                                    <div className={index === 0 ? "h-96 max-h-96 mb-4 md:w-full cursor-pointer overflow-hidden" : "overflow-hidden cursor-pointer md:h-96 md:max-h-96 md:w-full w-80"}>
-                                        <img src={require(`../../../backend/anc_imgs/${anc.anc_img}`)} alt="" className='object-contain md:hover:scale-110 md:transit md:duration-500 md:ease-in-out w-full' />
-                                    </div>
-                                    <div className={index === 0 ? "md:pl-3 md:pr-3" : "text-start md:pl-3 md:pr-3"}>
-                                        <div className='font-semibold text-red-800 text-lg'>{anc.anc_title}</div>
-                                        <div className={index === 0 ? "truncate font-light" : "w-40 mt-3 md:truncate md:w-72"}>
-                                            <div className="text-sm font-light leading-6 md:truncate">{anc.anc_desc}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                            
                         </div>
                     </div>
                 </div>
