@@ -482,8 +482,8 @@ app.post('/create-account', async (req, res) => {
         const formatted_date = current_date.toISOString().split('T')[0];
 
 
-        const accountValues = [username, password, email, studentId, role];
-        const accountDetails = [firstName, middleName, lastName, address, contact, birthdate, gender, formatted_date];
+        const accountValues = [username, password, email, studentId, role, formatted_date];
+        const accountDetails = [firstName, middleName, lastName, address, contact, birthdate, gender];
         const activty = "Create Account"
         // Check if the studentId or email already exist in tbl_account
         const checkQuery = `SELECT * FROM tbl_account WHERE student_id = ? OR acc_email = ?`;
