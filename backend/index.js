@@ -121,87 +121,74 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Helper function to delete file
+const deleteFile = (filePath) => {
+    return new Promise((resolve, reject) => {
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                reject(`Failed to delete file: ${err}`);
+            } else {
+                resolve("Uploaded file deleted successfully.");
+            }
+        });
+    });
+};
+
 app.post("/submitForm", upload.single('file'), async (req, res) => {
     const { credential, studentType, message, acc_id } = req.body;
 
     try {
         const result = await checkForm(acc_id, credential);
-        
+
         if (result.length > 0) {
             console.error("Form already submitted");
 
-            // Delete the uploaded file if the form is already submitted
+            // Delete uploaded file if form already submitted
             if (req.file) {
                 const filePath = path.resolve('./files_img', req.file.filename); // Resolve path to 'files_img'
-                fs.unlink(filePath, (err) => {
-                    if (err) {
-                        console.error("Failed to delete file:", err);
-                    } else {
-                        console.log("Uploaded file deleted due to already submitted form.");
-                    }
-                });
+                await deleteFile(filePath); // Use async/await for better error handling
             }
 
-            res.status(299).send("Form already submitted");
-            return; 
+            return res.status(400).json({ message: "Form already submitted" });
         }
     } catch (err) {
         console.error("Error checking form existence:", err);
 
-        // Delete the uploaded file if an error occurs while checking form existence
+        // Delete uploaded file if an error occurs
         if (req.file) {
-            const filePath = path.resolve('./files_img', req.file.filename); // Resolve path to 'files_img'
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error("Failed to delete file:", err);
-                } else {
-                    console.log("Uploaded file deleted due to form existence check failure.");
-                }
-            });
+            const filePath = path.resolve('./files_img', req.file.filename);
+            await deleteFile(filePath);
         }
 
-        res.status(500).send("Error checking form existence");
-        return;
+        return res.status(500).json({ message: "Error checking form existence" });
     }
 
     // Ensure file is uploaded
     if (!req.file) {
         console.error("File not uploaded");
-        res.status(400).send("File not uploaded");
-
-        // Delete the uploaded file if it's not available
-        if (req.file) {
-            const filePath = path.resolve('./files_img', req.file.filename); // Resolve path to 'files_img'
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error("Failed to delete file:", err);
-                } else {
-                    console.log("Uploaded file deleted due to file not being available.");
-                }
-            });
-        }
-
-        return;
+        return res.status(400).json({ message: "File not uploaded" });
     }
 
-    const fileImg = req.file.filename; // Get filename from req.file
-
+    const fileImg = req.file.filename;
     const current_date = new Date();
     const formatted_date = current_date.toISOString().split('T')[0];
 
     const query = `
-            INSERT INTO tbl_file_submitted 
-            (account_id, rp_id, student_type, remarks, file_img, status_id, submitted_date) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)`;
-        const values = [acc_id, credential, studentType, message, fileImg, 1, formatted_date];
+        INSERT INTO tbl_file_submitted 
+        (account_id, rp_id, student_type, remarks, file_img, status_id, submitted_date) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-        db.query(query, values, (err, data) => {
-            if (err) {
-                res.status(500).send("Error inserting data into database");
-            } else {
-                res.status(200).send("Data inserted into database");
-            }
-        });
+    const values = [acc_id, credential, studentType, message, fileImg, 1, formatted_date];
+
+    db.query(query, values, (err, data) => {
+        if (err) {
+            console.error("Error inserting data into database:", err);
+            return res.status(500).json({ message: "Error inserting data into database" });
+        }
+
+        console.log("Data inserted into database successfully");
+        return res.status(200).json({ message: "Data inserted into database successfully" });
+    });
 });
 
 
